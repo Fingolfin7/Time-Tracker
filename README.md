@@ -20,11 +20,14 @@ Included is a .txt file called `Subject Names` this contains a list of all the a
 
 `Chemistry`
 
-Once you compile and run the program you will be greated with the options to 1)create a New Session, 2) Show Totals, and 3) exit
+Once you compile and run the program you will be greated with the options to 1)create a New Session, 2) Show Totals, and 3) exit.
+A bell sound (loaded from the `clock-chimes-daniel_simon.wav` file) will ring every 30 minutes.
 
 Press any key during a new session to stop the counter and save the time total. 
 
 Time totals are saved in a .txt file called `LogTime`
+
+You can view a bar graph of your activities and the total hours for each by running the `Time-tracker_graphs` python file.
 
 ## Contribute to the project
 
