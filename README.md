@@ -11,7 +11,7 @@ Once downloaded, open folder and run the `GenerateProject.bat` file, which will 
 Alternatively, you can enter this command on the command prompt within the folder -> `premake5.exe vs2019`
 You can generate solutions for vs2019, vs2017, vs2010 etc.
 
-### How to use it
+## How to use it
 Included is a .txt file called `Subject Names` this contains a list of all the activities you want to keep track of. Just add the activities you want to keep a track of to the file. Each activity should be on a new line. For example:
 
 `Mathematics`
