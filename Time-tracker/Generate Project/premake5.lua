@@ -3,7 +3,7 @@ workspace "Time-tracker"
 	location "../"
 	configurations {"Debug", "Release"}
 
-project "Plane2D"
+project "Time-tracker"
 	architecture "x86"
 
 	location "../Time-tracker"

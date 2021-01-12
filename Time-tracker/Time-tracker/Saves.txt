@@ -1,0 +1,6 @@
+Chess: 379.518
+C++: 1219.14
+Python: 913.364
+Writing: 0
+Chess Engine: 194.971
+OpenGL: 170.027

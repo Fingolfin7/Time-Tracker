@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include <chrono>
-#include <conio.h>
+#include <thread>
 
 #pragma comment (lib, "Winmm.lib")
 
@@ -28,8 +28,8 @@ struct subj {
 std::vector<subj> Subject;
 
 int choice;
+bool cntnue = true;
 void save_data();
-void load_data();
 void menu();
 
 struct Timer {
@@ -54,28 +54,6 @@ struct Timer {
 	}
 };
 
-void save_data() {//saves time totals for each subject
-	std::ofstream write("LogTime.txt");
-	if (write.is_open()) {
-		for (int i = 0; i < Subject.size(); i++) {
-			write << Subject[i].total_time << std::endl;
-		}
-	}
-}
-
-void load_data() {// reads in time totals for each subject
-	std::ifstream read("LogTime.txt");
-	std::string str;
-	if (read.is_open()) {
-		for (int i = 0; i < Subject.size(); i++) {
-			read >> str;
-			Subject[i].total_time = std::stod(str);
-		}
-	}
-
-	read.close();
-}
-
 void bell_sound() {
 	PlaySound(TEXT("clock-chimes-daniel_simon.wav"), NULL, SND_ASYNC);
 }
@@ -83,42 +61,37 @@ void bell_sound() {
 void timer(subj& subject) {
 	system("cls");
 	Timer timeSubj(subject);
-	double sessionLength;
-
-	std::cout << "Enter seesion length (in hours)" << std::endl;
-	std::cout << ">";
-	std::cin >> sessionLength;
-
-	sessionLength *= 60;
-	system("cls");
+	int oneSecond = 1000;
+	int thirtyMinBlock = 0;
 
 	std::cout << subject.name << ": " << std::endl;
 	std::cout << "Time Elapsed: ";
 
-	std::chrono::time_point<std::chrono::steady_clock> sessTime = std::chrono::steady_clock::now() + std::chrono::minutes(int(sessionLength));
+	std::thread newThread([]() { Sleep(1000); std::cin.get(); std::cin.get(); cntnue = false; }); // go lambdas!
 
-	while (std::chrono::steady_clock::now() < sessTime) {
-		for (int i = 0; i < 6; i++) {//30 minutes
-
-			std::chrono::time_point<std::chrono::steady_clock> block = std::chrono::steady_clock::now() + std::chrono::minutes(5);
-
-			while (std::chrono::steady_clock::now() < block) {
-				//do nothing
-				if (_kbhit()) {
-					std::cin.get();
-					timeSubj.~Timer();
-					menu();
+	while (cntnue) {
+		std::cout << char(219) << " ";
+		for (int i = 0; i < 300; i++) {
+			for (int j = 0; j < 10; j++) {
+				Sleep(0.1 * oneSecond);
+				if (!cntnue) {
+					break;
 				}
 			}
-
-			std::cout << char(219) << " ";
 		}
+		thirtyMinBlock++;
 
-		std::cout << "  ";
-
-		bell_sound();
+		if (thirtyMinBlock % 6 == 0) {
+			std::cout << " ";
+			bell_sound();
+		}
 	}
 
+	newThread.join();
+
+	timeSubj.~Timer();
+	cntnue = true;
+	menu();
 }
 
 void select_subject() {
@@ -187,34 +160,37 @@ void menu() {
 
 }
 
-void getSubjNames(std::vector<subj>& Subject) {
-	std::ifstream read("Subject Names.txt");
+void loadSaves(std::vector<subj>& Subject) {
+	std::ifstream read("Saves.txt");
 	std::string line;
-	int lineCount{ 0 };
 	subj genericSubj;
 
 	while (std::getline(read, line)) {
-		lineCount++;
+		genericSubj.setName(line.substr(0, line.find(": ")));
+
+		try{ genericSubj.total_time = std::stod(line.substr(line.find(": ") + 1, line.length())); }
+		catch (...) { genericSubj.total_time = 0.0f; }
+		
 		Subject.push_back(genericSubj);
 	}
 
 	read.close();
+}
 
-	std::ifstream readNames("Subject Names.txt");
-
-	line = " ";
-
-	for (int i = 0; i < Subject.size(); i++) {
-		std::getline(readNames, line);
-		Subject[i].setName(line);
+void save_data() {//saves time totals for each subject
+	std::ofstream write("Saves.txt");
+	if (write.is_open()) {
+		for (int i = 0; i < Subject.size(); i++) {
+			write << Subject[i].name << ": " << Subject[i].total_time << std::endl;
+		}
 	}
+
+	write.close();
 }
 
 int main() {
 
-	getSubjNames(Subject);
-
-	load_data();
+	loadSaves(Subject);
 
 	menu();
 
