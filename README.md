@@ -1,5 +1,5 @@
 # Time-Tracker
-A simple time tracking program I made to track my study time using the <chrono> library
+A simple time tracking program I made to track my study time using the `<chrono>` library
 
 ## Getting Started
 Visual Studio 2019 is recommended,
