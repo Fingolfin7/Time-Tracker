@@ -12,7 +12,7 @@ Alternatively, you can enter this command on the command prompt within the folde
 You can generate solutions for vs2019, vs2017, vs2010 etc.
 
 ## How to use it
-Included is a .txt file called `Subject Names` this contains a list of all the activities you want to keep track of. Just add the activities you want to keep a track of to the file. Each activity should be on a new line. For example:
+Included is a .txt file called `Saves.txt` this contains a list of all the activities you want to keep track of. Just add the activities you want to keep a track of to the file. Each activity should be on a new line. For example:
 
 `Mathematics`
 
@@ -25,9 +25,9 @@ A bell sound (loaded from the `clock-chimes-daniel_simon.wav` file) will ring ev
 
 Press any key during a new session to stop the counter and save the time total. 
 
-Time totals are saved in a .txt file called `LogTime`
+Time totals are saved in the same `Saves.txt` file
 
-You can view a bar graph of your activities and the total hours for each by running the `Time-tracker_graphs` python file.
+Shows a bar graph of your activities and the total hours for each on the "Show totals" page by executing the `Time-tracker_graphs` python file.
 
 ## Contribute to the project
 
