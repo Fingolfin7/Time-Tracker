@@ -1,36 +1,25 @@
 #include <iostream>
 #include <vector>
 #include <windows.h> // allows us to use "PlaySound()"
+#include <ShellAPI.h> // shell execute
+#include <thread>
 #include <fstream>
 #include <string>
 #include <chrono>
-#include <thread>
+#include "Colours.h"
 
 #pragma comment (lib, "Winmm.lib")
 
 struct subj {
 	std::string name;
 	double total_time;
-
-	subj()
-		:name(""), total_time(0)
-	{}
-
-	subj(std::string subjectName)
-		:name(subjectName), total_time(0)
-	{}
-
-	void setName(std::string Sname) {
-		this->name = Sname;
-	}
 };
 
 std::vector<subj> Subject;
 
-int choice;
-bool cntnue = true;
 void save_data();
 void menu();
+bool cntnue = true;
 
 struct Timer {
 	std::chrono::time_point<std::chrono::steady_clock> start, end;
@@ -38,12 +27,12 @@ struct Timer {
 	subj* genericSubject;
 
 	Timer(subj& Subj)
-		:start(std::chrono::high_resolution_clock::now()), genericSubject(&Subj), duration(0)//member initalizer list
+		:start(std::chrono::steady_clock::now()), genericSubject(&Subj), duration(0)//member initalizer list
 	{
 	}
 
 	~Timer() {
-		end = std::chrono::high_resolution_clock::now();
+		end = std::chrono::steady_clock::now();
 		duration = end - start;
 		genericSubject->total_time += duration.count() / 60;
 
@@ -54,6 +43,7 @@ struct Timer {
 	}
 };
 
+
 void bell_sound() {
 	PlaySound(TEXT("clock-chimes-daniel_simon.wav"), NULL, SND_ASYNC);
 }
@@ -61,62 +51,67 @@ void bell_sound() {
 void timer(subj& subject) {
 	system("cls");
 	Timer timeSubj(subject);
-	int oneSecond = 1000;
-	int thirtyMinBlock = 0;
+	int block = 0;
 
-	std::cout << subject.name << ": " << std::endl;
+	std::cout << Colours::colourString("[underline]" + subject.name + ":[reset] ") << std::endl;
 	std::cout << "Time Elapsed: ";
 
-	std::thread newThread([]() { Sleep(1000); std::cin.get(); std::cin.get(); cntnue = false; }); // go lambdas!
+	std::thread secThread([&block]() {
+		while (cntnue) {
+			std::this_thread::sleep_for(std::chrono::minutes(5)); // much better than sleep()
+			if (cntnue) {
+				std::cout << Colours::colourString("[cyan]") << char(219) << Colours::colourString("[reset] ");
 
-	while (cntnue) {
-		std::cout << char(219) << " ";
-		for (int i = 0; i < 300; i++) {
-			for (int j = 0; j < 10; j++) {
-				Sleep(0.1 * oneSecond);
-				if (!cntnue) {
-					break;
+				block++;
+
+				if (block % 6 == 0) {
+					std::cout << " ";
+					bell_sound();
 				}
 			}
 		}
-		thirtyMinBlock++;
-
-		if (thirtyMinBlock % 6 == 0) {
-			std::cout << " ";
-			bell_sound();
-		}
-	}
-
-	newThread.join();
+		
+		});
+	secThread.detach();
+	
+	//_getch(); needed conio.h
+	getchar(); //included in iostream
+	getchar();
+	cntnue = false;
 
 	timeSubj.~Timer();
 	cntnue = true;
 	menu();
 }
 
-void select_subject() {
+int select_subject() {
 	system("cls");
+	int choice = 0;
 	std::cout << "Select Subject:" << std::endl;
 	for (int i = 0; i < Subject.size(); i++) {
 		std::cout << i + 1 << ". " << Subject[i].name << "," << std::endl;
 	}
 	std::cout << ">";
 	std::cin >> choice;
+	return choice - 1;
 }
 
 void show_totals() {
 	system("cls");
-	int choice;
-	std::cout << "Totals per subject: " << std::endl << std::endl;
+	std::cout << Colours::colourString("[underline]Totals per subject:[reset] ") << std::endl << std::endl;
 
 	for (int i = 0; i < Subject.size(); i++) {
 		std::cout << Subject[i].name << "(" << Subject[i].total_time / 60 << " hrs)" << std::endl;
 
 		for (int counter = 0; counter < int(Subject[i].total_time / 60); counter++) {//each block is an hour 
-			std::cout << char(219) << " ";
+			std::cout << Colours::colourString("[cyan]") << char(219) << Colours::colourString("[reset] ");
 		}
 		std::cout << std::endl << std::endl;
 	}
+
+	
+	ShellExecute(NULL, L"open", L"Time_subj_tracker_graphs.py",
+				 NULL, NULL, SW_RESTORE); 
 
 	std::cout << std::endl << std::endl;
 	system("pause");
@@ -127,7 +122,7 @@ void menu() {
 
 	system("cls");
 
-	std::cout << "Time Tracker" << std::endl;
+	std::cout << Colours::colourString("[underline]Time Tracker[reset]") << std::endl;
 	std::cout << "1.New Session," << std::endl;
 	std::cout << "2.Show Totals," << std::endl;
 	std::cout << "3.Exit." << std::endl;
@@ -137,8 +132,7 @@ void menu() {
 	switch (optn)
 	{
 	case 1:
-		select_subject();
-		timer(Subject[choice - 1]);
+		timer(Subject[select_subject()]);
 		break;
 
 	case 2:
@@ -166,11 +160,11 @@ void loadSaves(std::vector<subj>& Subject) {
 	subj genericSubj;
 
 	while (std::getline(read, line)) {
-		genericSubj.setName(line.substr(0, line.find(": ")));
+		genericSubj.name = line.substr(0, line.find(": "));
 
-		try{ genericSubj.total_time = std::stod(line.substr(line.find(": ") + 1, line.length())); }
+		try { genericSubj.total_time = std::stod(line.substr(line.find(": ") + 1, line.length())); }
 		catch (...) { genericSubj.total_time = 0.0f; }
-		
+
 		Subject.push_back(genericSubj);
 	}
 
