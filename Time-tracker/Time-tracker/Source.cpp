@@ -110,11 +110,20 @@ void show_totals() {
 	}
 
 	
-	ShellExecute(NULL, L"open", L"Time_subj_tracker_graphs.py",
-				 NULL, NULL, SW_RESTORE); 
+	std::cout << "Charts: \n1.Bar Graph,\n2.Pie Chart,\n3.Neither.\n>";
+	std::cin >> chart;
+	
+	if (chart == 1) {
+		ShellExecute(NULL, L"open", L"C:\\Users\\Kuda\\Documents\\Programming\\C++\\Time-subj tracker\\Time-subj tracker\\Bar Graph.py",
+			NULL, NULL, SW_RESTORE);
+	}
+	else if (chart == 2) {
+		ShellExecute(NULL, L"open", L"C:\\Users\\Kuda\\Documents\\Programming\\C++\\Time-subj tracker\\Time-subj tracker\\Pie Chart.py",
+			NULL, NULL, SW_RESTORE);
+	}
 
-	std::cout << std::endl << std::endl;
-	system("pause");
+	//std::cout << std::endl << std::endl;
+	//system("pause");
 }
 
 void menu() {
