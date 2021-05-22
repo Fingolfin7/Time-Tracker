@@ -1,0 +1,7 @@
+Toggle Music: Off
+Music Freq: 1
+***1 => once every hour, 2 => once every half hour***
+Save File: C:\Users\Kuda\Documents\Programming\C++\Time-subj tracker\Time-subj tracker\Saves.txt
+Pie Chart File: C:\Users\Kuda\Documents\Programming\C++\Time-subj tracker\Time-subj tracker\Pie Chart.py
+Bar Chart File: C:\Users\Kuda\Documents\Programming\C++\Time-subj tracker\Time-subj tracker\Bar Graph.py
+Audio File: C:\Users\Kuda\Documents\Programming\C++\Time-subj tracker\Time-subj tracker\clock-chimes-daniel_simon.wav
