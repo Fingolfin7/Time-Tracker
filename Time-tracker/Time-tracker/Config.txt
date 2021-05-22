@@ -1,7 +1,7 @@
 Toggle Music: Off
 Music Freq: 1
 ***1 => once every hour, 2 => once every half hour***
-Save File: C:\folder path\Time-subj tracker\Saves.txt
-Pie Chart File: C:\folder path\Time-subj tracker\Pie Chart.py
-Bar Chart File: C:\folder path\Bar Graph.py
-Audio File: C:\folder path\Time-subj tracker\clock-chimes-daniel_simon.wav
+Save File: Saves.txt
+Pie Chart File: Pie Chart.py
+Bar Chart File: Bar Graph.py
+Audio File: clock-chimes-daniel_simon.wav
