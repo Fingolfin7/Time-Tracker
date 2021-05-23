@@ -11,7 +11,7 @@ def showPieChart(subj_names=[], subj_totals=[], colours=[]):
     plt.show()
 
 
-read = open("C:\\Users\\Kuda\\Documents\\Programming\\C++\\Time-subj tracker\\Time-subj tracker\\Saves.txt", "r")
+read = open("Saves.txt", "r")
 lines = list(read.readlines())
 read.close()
 
@@ -22,8 +22,9 @@ time_totals = []
 for line in lines:
     partitions = str(line).partition(": ")
     print(partitions)
-    subj.append(partitions[0])
-    time_totals.append(float(partitions[2]) / 60)
+    if float(partitions[2]) > 0:
+        subj.append(partitions[0])
+        time_totals.append(float(partitions[2]) / 60)
 
 
 showPieChart(subj, time_totals)
