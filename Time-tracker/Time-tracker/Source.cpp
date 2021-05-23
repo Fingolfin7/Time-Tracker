@@ -53,7 +53,7 @@ const char* configfile = "Config.txt";
 
 
 // a bunch of functions
-void bell_sound() { // fix this
+void bell_sound() {
 	if (toggleMusic) {
 		PlaySound(StringToWString(audiofile).c_str(), NULL, SND_ASYNC);
 	}
@@ -71,16 +71,18 @@ void timer(subj& subject) {
 	std::thread secThread([&block]() {
 
 		while (cntnue) {
-			std::this_thread::sleep_for(std::chrono::seconds(5)); // much better than sleep()
+			std::this_thread::sleep_for(std::chrono::minutes(5)); // much better than sleep()
 			if (cntnue) {
 				std::cout << Colours::colourString("[cyan]") << char(219) << Colours::colourString("[reset] ");
 
 				block++;
 
 				if (musicFreq > 0) {
-					if (block % (12 / musicFreq) == 0) {
+					if (block % 6 == 0) {
 						std::cout << " ";
-						bell_sound();
+						if (block % (12 / musicFreq) == 0) {
+							bell_sound();
+						}	
 					}
 				}
 			}
@@ -89,7 +91,8 @@ void timer(subj& subject) {
 			}
 		}
 		
-		});
+	});
+
 	secThread.detach();
 	
 	//_getch(); needed conio.h
