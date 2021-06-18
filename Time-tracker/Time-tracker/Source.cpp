@@ -38,12 +38,12 @@ struct Timer {
 
 		std::cout << "\n\nSession time (in minutes): " << duration.count() / 60 << "\n";
 		std::cout << "Total time (in minutes): " << genericSubject->total_time << "\n";
-		system("pause");
 		save_data();
 	}
 };
 
 //Globals
+Timer* pT;
 int musicFreq = 1;
 bool cntnue = true;
 bool toggleMusic = true;
@@ -59,10 +59,22 @@ void bell_sound() {
 	}
 }
 
+//on exit handler
+BOOL ctrl_handler(DWORD event)
+{
+	if (event == CTRL_CLOSE_EVENT) {
+		pT->~Timer();//call timer destructer 
+		return TRUE;
+	}
+	return FALSE;
+}
+
 void timer(subj& subject) {
 	system("cls");
 	cntnue = true;
 	Timer timeSubj(subject);
+	pT = &timeSubj; // set globall timer pointer to the address timeSubj
+	SetConsoleCtrlHandler((PHANDLER_ROUTINE)(ctrl_handler), TRUE); //setting the control handler
 	int block = 0;
 
 	std::cout << Colours::colourString("[underline]" + subject.name + ":[reset] ") << std::endl;
@@ -99,6 +111,7 @@ void timer(subj& subject) {
 	auto a = getchar(); //included in iostream
 	auto b = getchar();
 	cntnue = false;
+	
 }
 
 int select_subject() {
@@ -165,6 +178,7 @@ void menu() {
 		{
 		case 1:
 			timer(Subject[select_subject()]);
+			system("pause");
 			break;
 
 		case 2:
